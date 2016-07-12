@@ -7,7 +7,6 @@ class Grid
   attr_accessor :g, :sq
 
   def initialize
-    @VAL = (1..9).to_a
     @ROW = ("A".."I").to_a
     @COL = (1..9).to_a
     @sq = make_sq_list
@@ -124,57 +123,53 @@ class Grid
     g
   end
 
-end
-
-def make_puzzle
-  h ={}
-  f = File.open('game1.txt', 'r')
-  f.each_line do |l|
-    a = l.chomp.split('=')
-    h[a[0]] = [a[1].to_i]
+  def load(filename)
+    f = File.open(filename, 'r')
+    f.each_line do |l|
+      a = l.chomp.split('=')
+      @g[a[0]] = [a[1].to_i]
+    end
   end
-  h
-end
 
-def solve(g)
+  def solve
   iteration = 0
   h = {}
 
   while true do
       grid_check={}
       # start cycle
-      g.cycle
+      cycle
       # increment iteration
       iteration +=1
-      # if all values of g.g are of length 0, puzzle is solved. Exit loop and show grid with number of iterations taken
-      g.g.each {|k,v| grid_check[k] = v if v.size > 1 }
+      # if all values of g.g are of length 0, puzzle is solved.
+      # Exit loop and show grid with number of iterations taken
+      @g.each {|k,v| grid_check[k] = v if v.size > 1 }
       #binding.pry
       if grid_check.size == 0
         reason = "Puzzle solved"
-        g.show(reason, iteration)
+        show(reason, iteration)
         break
         # else if h = g, no changes have been made in the cycle and stalemate has been reached.
         # Exit loop and show grid with number of iterations and reason for exit (stalemate).
-      elsif h == g.g
+      elsif h == @g
         reason = "Stalemate"
-        g.show(reason, iteration)
+        show(reason, iteration)
+        # Also show values og g.g elements where size > 1
         grid_check.each {|k,v| puts "#{k} : #{v}"}
         break
       end
-      h = Marshal::load(Marshal.dump(g.g))
+      h = Marshal::load(Marshal.dump(@g))
     end
-    # Also show values og g.g elements where size > 1
-
-
-
   end
 
 
-  g = Grid.new
-  h = make_puzzle
-  h.each {|k,v| g.g[k] = v}
+end
 
-  solve(g)
+
+  g = Grid.new
+
+  g.load('game1.txt')
+  g.solve
 
 
 
