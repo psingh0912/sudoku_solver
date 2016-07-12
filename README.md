@@ -13,6 +13,7 @@ Each row in the sudo grid is a letter from A to I and each column is a number 1 
 
 The game file is a simple text file representing the initial state of the gamme. Each line in the file should be of the form:
 >X=Y
+
 where X is the cell address and Y is the number in the cell.
 
 At this time, the file format doesn't tolerate any deviations, so don't put any spaces or comments. 
